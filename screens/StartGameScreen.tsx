@@ -1,21 +1,46 @@
-import {StyleSheet, TextInput, View} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, StyleSheet, TextInput, View} from 'react-native';
 
 import PrimaryButton from '../components/PrimaryButton';
+import colors from '../constants/colors';
+interface StartGameScreenProps {
+  setUserNumber: React.Dispatch<React.SetStateAction<number | undefined>>;
+}
 
-const StartGameScreen = () => {
+const StartGameScreen = ({setUserNumber}: StartGameScreenProps) => {
+  const [enteredNumber, setEnteredNumber] = useState('');
+
+  function resetInputHandler() {
+    setEnteredNumber('');
+  }
+
+  function confirmInputHandler() {
+    const chosenNumber = parseInt(enteredNumber);
+    if (isNaN(chosenNumber) || chosenNumber < 0 || chosenNumber > 99) {
+      Alert.alert(
+        'Invalid Number!',
+        'Number has to be a number between 1 and 99',
+        [{text: 'okay', style: 'destructive', onPress: resetInputHandler}],
+      );
+      return;
+    }
+    setUserNumber(chosenNumber);
+  }
   return (
     <View style={styles.inputContainer}>
       <TextInput
         style={styles.numberInput}
         maxLength={2}
         keyboardType="number-pad"
+        value={enteredNumber}
+        onChangeText={text => setEnteredNumber(text)}
       />
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonContainer}>
-          <PrimaryButton>Reset</PrimaryButton>
+          <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
         </View>
         <View style={styles.buttonContainer}>
-          <PrimaryButton>Confirm</PrimaryButton>
+          <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
         </View>
       </View>
     </View>
@@ -31,7 +56,7 @@ const styles = StyleSheet.create({
     marginTop: 100,
     marginHorizontal: 24,
     padding: 16,
-    backgroundColor: '#3b021f',
+    backgroundColor: colors.primary500,
     borderRadius: 8,
     elevation: 4,
     shadowColor: 'black',
@@ -43,9 +68,9 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     fontSize: 28,
-    borderBottomColor: '#ddb52f',
+    borderBottomColor: colors.accent500,
     borderBottomWidth: 2,
-    color: '#ddb52f',
+    color: colors.accent500,
     marginVertical: 8,
     fontWeight: 'bold',
     textAlign: 'center',
