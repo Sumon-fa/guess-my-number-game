@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Alert, StyleSheet, View} from 'react-native';
 
 import Title from '../components/Title';
 import colors from '../constants/colors';
 import NumberContainer from '../components/game/NumberContainer';
 import PrimaryButton from '../components/PrimaryButton';
+import Card from '../components/ui/Card';
+import InstructionText from '../components/ui/InstructionText';
 
 function generateRandomBetween(
   min: number,
@@ -22,21 +24,25 @@ function generateRandomBetween(
 
 interface GameScreenProps {
   userNumber: number;
+  onGameOver: () => void;
 }
 let minBoundary = 1;
 let maxBoundary = 100;
-const GameScreen = ({userNumber}: GameScreenProps) => {
-  const initialGuess = generateRandomBetween(
-    minBoundary,
-    maxBoundary,
-    userNumber,
-  );
+
+const GameScreen = ({userNumber, onGameOver}: GameScreenProps) => {
+  const initialGuess = generateRandomBetween(1, 100, userNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
+
+  useEffect(() => {
+    if (currentGuess === userNumber) {
+      onGameOver();
+    }
+  }, [currentGuess, userNumber, onGameOver]);
 
   function nextGuessHandler(direction: string) {
     if (
       (direction === 'lower' && currentGuess < userNumber) ||
-      (direction === 'greter' && currentGuess > userNumber)
+      (direction === 'greater' && currentGuess > userNumber)
     ) {
       Alert.alert("Don't lie!", 'you know that this is wrong...', [
         {
@@ -64,8 +70,8 @@ const GameScreen = ({userNumber}: GameScreenProps) => {
     <View style={styles.screen}>
       <Title>Opponent's Guess</Title>
       <NumberContainer>{currentGuess}</NumberContainer>
-      <View>
-        <Text>Higher or lower?</Text>
+      <Card>
+        <InstructionText>Higher or lower?</InstructionText>
         <View>
           <PrimaryButton onPress={() => nextGuessHandler('lower')}>
             -
@@ -74,7 +80,7 @@ const GameScreen = ({userNumber}: GameScreenProps) => {
             +
           </PrimaryButton>
         </View>
-      </View>
+      </Card>
       {/*<View>LOG ROUNDS</View>*/}
     </View>
   );
