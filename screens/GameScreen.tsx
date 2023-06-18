@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import Title from '../components/Title';
-import colors from '../constants/colors';
 import NumberContainer from '../components/game/NumberContainer';
 import PrimaryButton from '../components/PrimaryButton';
 import Card from '../components/ui/Card';
@@ -72,13 +73,17 @@ const GameScreen = ({userNumber, onGameOver}: GameScreenProps) => {
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card>
         <InstructionText>Higher or lower?</InstructionText>
-        <View>
-          <PrimaryButton onPress={() => nextGuessHandler('lower')}>
-            -
-          </PrimaryButton>
-          <PrimaryButton onPress={() => nextGuessHandler('greater')}>
-            +
-          </PrimaryButton>
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={() => nextGuessHandler('lower')}>
+              <Icon name="md-remove" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={() => nextGuessHandler('greater')}>
+              <Icon name="add" size={24} color="white" />
+            </PrimaryButton>
+          </View>
         </View>
       </Card>
       {/*<View>LOG ROUNDS</View>*/}
@@ -93,13 +98,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.accent500,
-    textAlign: 'center',
-    borderWidth: 2,
-    borderColor: colors.accent500,
-    padding: 12,
+  buttonsContainer: {
+    flexDirection: 'row',
+    marginTop: 12,
+  },
+  buttonContainer: {
+    flex: 1,
   },
 });
